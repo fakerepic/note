@@ -16,7 +16,6 @@ RUN upx -9 /builder/main
 FROM gcr.io/distroless/static:latest
 WORKDIR /app
 COPY --from=base /builder/main main
-COPY --from=base /builder/pb_data pb_data
 
 EXPOSE 8090
 CMD [ "./main", "serve", "--dev=false", "--http=0.0.0.0:8090" ]
