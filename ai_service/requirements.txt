@@ -1,0 +1,10 @@
+fastapi
+couchdb3
+torch
+fastembed
+python-dotenv
+llama-index-core
+llama-index-embeddings-fastembed
+llama-index-llms-together
+llama-index-vector-stores-postgres
+llama-index-storage-docstore-postgres
