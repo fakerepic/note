@@ -7,11 +7,8 @@ import (
 
 	"github.com/fjl/go-couchdb"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/models"
 )
-
-type User struct {
-	Id       string `db:"id" json:"id"`
-}
 
 func Register(app core.App, couch *couchdb.Client) error {
 	app.OnRecordAfterConfirmVerificationRequest().Add(
@@ -22,11 +19,12 @@ func Register(app core.App, couch *couchdb.Client) error {
 		},
 	)
 
-	// TODO: ensure userdb for all verified users
-	app.OnBeforeServe().Add(func(_ *core.ServeEvent) error {
-		user := []User{}
-		app.Dao().DB().NewQuery("SELECT id FROM user WHERE verified=true").All(&user)
-		for _, u := range user {
+	// TODO: put this in a migration
+	// ensure userdb for all verified users
+	app.OnAfterBootstrap().Add(func(_ *core.BootstrapEvent) error {
+		records := []models.BaseModel{}
+		app.Dao().DB().NewQuery("SELECT id FROM users WHERE verified=true").All(&records)
+		for _, u := range records {
 			CreateUserDBForSync(couch, u.Id)
 		}
 		return nil
