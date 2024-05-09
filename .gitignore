@@ -1,0 +1,9 @@
+**/.env
+**/.env.prod
+**/.venv
+**/venv
+**/__pycache__
+**/_test.py
+/ai_service/persist
+**/.vscode
+/app_gateway/pb_data/
