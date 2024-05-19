@@ -1,5 +1,18 @@
 version: "3.9"
 services:
+  pgvector:
+    image: ankane/pgvector
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./.env.prod
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 15s
+      timeout: 5s
+
   couch_server:
     build:
       context: ./couch_server/
@@ -12,16 +25,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5984/_up"]
       interval: 15s
-      timeout: 2s
-      retries: 20
-      start_period: 1m
-
-  pgvector:
-    image: ankane/pgvector
-    ports:
-      - "5432:5432"
-    env_file:
-      - ./.env.prod
+      timeout: 5s
+    volumes:
+      - couchdb:/opt/couchdb/data
 
   ai_service:
     build:
@@ -32,8 +38,15 @@ services:
     env_file:
       - ./.env.prod
     depends_on:
-      couch_server:
-        condition: service_healthy
+      pgvector:
+        condition: service_healthy 
+    volumes:
+      - ./ai_service:/code/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
 
   app_gateway:
     build:
@@ -44,10 +57,18 @@ services:
     env_file:
       - ./.env.prod
     depends_on:
+      ai_service:
+        condition: service_healthy
       couch_server:
         condition: service_healthy
+    volumes:
+      - ./app_gateway/config:/app/config
+      - ./app_gateway/couch:/app/couch
+      - ./app_gateway/hooks:/app/hooks
+      - ./app_gateway/migrations:/app/migrations
+      - pbdata:/app/pb_data
 
-# volumes:
-#   vecdb:
-#   couchdb:
-#   pbdata:
+volumes:
+  couchdb:
+  pbdata:
+  pgdata:
