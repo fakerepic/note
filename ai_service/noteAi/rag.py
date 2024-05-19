@@ -12,7 +12,9 @@ from noteAi.config import AppConfig
 from noteAi.data_loader import CouchDBReader
 from noteAi.pg_vecstore import get_vectorstore
 
-Settings.embed_model = FastEmbedEmbedding(model_name="BAAI/bge-small-en-v1.5")
+Settings.embed_model = FastEmbedEmbedding(
+    model_name="BAAI/bge-small-zh-v1.5", cache_dir="./model_cache"
+)
 
 Settings.llm = TogetherLLM(
     model="Qwen/Qwen1.5-14B-Chat", api_key=AppConfig.TOGETHER_API_KEY
