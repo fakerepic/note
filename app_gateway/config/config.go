@@ -14,6 +14,13 @@ type Config struct {
 	COUCHDB_PORT     string
 	AISERVICE_HOST   string
 	AISERVICE_PORT   string
+	ADMIN_EMAIL      string
+	ADMIN_PASSWORD   string
+	SMTP_HOST        string
+	SMTP_PORT        string
+	SMTP_USER        string
+	SMTP_PASSWORD    string
+	APP_PUBLIC_URL   string
 }
 
 func Load() Config {
@@ -26,6 +33,13 @@ func Load() Config {
 		COUCHDB_PORT:     os.Getenv("COUCHDB_PORT"),
 		AISERVICE_HOST:   os.Getenv("AISERVICE_HOST"),
 		AISERVICE_PORT:   os.Getenv("AISERVICE_PORT"),
+		ADMIN_EMAIL:      os.Getenv("ADMIN_EMAIL"),
+		ADMIN_PASSWORD:   os.Getenv("ADMIN_PASSWORD"),
+		SMTP_HOST:        os.Getenv("SMTP_HOST"),
+		SMTP_PORT:        os.Getenv("SMTP_PORT"),
+		SMTP_USER:        os.Getenv("SMTP_USER"),
+		SMTP_PASSWORD:    os.Getenv("SMTP_PASSWORD"),
+		APP_PUBLIC_URL:   os.Getenv("APP_PUBLIC_URL"),
 	}
 }
 
