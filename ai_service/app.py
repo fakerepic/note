@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from typing import Optional
+from typing import Optional, List
 from llama_index.core import VectorStoreIndex
 from llama_index.core.vector_stores.types import VectorStoreQuery
 from pydantic import BaseModel, Field
@@ -18,11 +18,11 @@ def root():
 
 class ResponseQuestion(BaseModel):
     search_result: str
-    source: str
+    sources: List[str]
 
 
 class ResponseSearch(BaseModel):
-    sources: list[str]
+    sources: List[str]
 
 
 class QuerySearch(BaseModel):
@@ -44,7 +44,7 @@ def question(user_id: str, query: QuerySearch):
     response = query_engine.query(query.query)
     response_object = ResponseQuestion(
         search_result=str(response).strip(),
-        source=[node.metadata.get("id") for node in response.source_nodes][0],  # type: ignore
+        sources=[node.metadata.get("id") for node in response.source_nodes],  # type: ignore
     )
     return response_object
 

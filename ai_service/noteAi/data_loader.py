@@ -36,7 +36,7 @@ class CouchDBReader(BaseReader):
             self.client = couchdb3.Server(f"http://{user}:{pwd}@{host}:{port}")
         self.max_docs = max_docs
 
-    def load_data(self, db_name: str, query: Optional[Dict] = None) -> List[Document]:
+    def load_data(self, db_name: str, query: Optional[Dict] = None) -> List[Document]:  # type: ignore
         """Load data from the input directory.
 
         Args:
@@ -69,8 +69,8 @@ class CouchDBReader(BaseReader):
                 documents.append(
                     Document(
                         text=item.get("content"),
-                        id_=item.get("_id"),
-                        metadata={
+                        id_=item.get("_id"),  # type: ignore
+                        metadata={  # type: ignore
                             "id": item.get("_id"),
                             "title": item.get("title"),
                             "user": db_name,

@@ -22,7 +22,7 @@ Settings.llm = TogetherLLM(
 
 reader = CouchDBReader(
     user=AppConfig.COUCHDB_USER,
-    pwd=AppConfig.COUCHDB_PWD,
+    pwd=AppConfig.COUCHDB_PASSWORD,
     host=AppConfig.COUCHDB_HOST,
     port=AppConfig.COUCHDB_PORT,
 )

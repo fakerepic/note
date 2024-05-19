@@ -1,7 +1,7 @@
 import psycopg2
 
 
-connection_string = "postgresql://postgres:asd123321@localhost:5432"
+connection_string = "postgresql://postgres:pgvector@localhost:5432"
 db_name = "vector_db"
 conn = psycopg2.connect(connection_string)
 conn.autocommit = True
