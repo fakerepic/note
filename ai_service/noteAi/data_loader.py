@@ -64,15 +64,15 @@ class CouchDBReader(BaseReader):
                 # check that the _id field exists
                 if "_id" not in item:
                     raise ValueError("`_id` field not found in CouchDB document.")
-                if "content" not in item:
+                if "text" not in item:
                     continue
                 documents.append(
                     Document(
-                        text=item.get("content"),
+                        text=item.get("text"),
                         id_=item.get("_id"),  # type: ignore
                         metadata={  # type: ignore
                             "id": item.get("_id"),
-                            "title": item.get("title"),
+                            "title": item.get("title") if "title" in item else "",
                             "user": db_name,
                         },
                     )

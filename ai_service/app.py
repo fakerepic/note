@@ -21,8 +21,14 @@ class ResponseQuestion(BaseModel):
     sources: List[str]
 
 
+class SourceModal(BaseModel):
+    id: str
+    title: Optional[str]
+    text: str
+
+
 class ResponseSearch(BaseModel):
-    sources: List[str]
+    sources: List[SourceModal]
 
 
 class QuerySearch(BaseModel):
@@ -62,7 +68,14 @@ def search(user_id: str, query: QuerySearch):
     vector_store = get_vectorstore()
     result = vector_store.query(query=vector_store_query)
     response_object = ResponseSearch(
-        sources=[node.get_content() for node in result.nodes]  # type: ignore
+        sources=[
+            SourceModal(
+                id=node.metadata.get("id"),  # type: ignore
+                text=node.get_content(),
+                title=node.metadata.get("title"),
+            )
+            for node in result.nodes  # type: ignore
+        ]
     )
     return response_object
 
