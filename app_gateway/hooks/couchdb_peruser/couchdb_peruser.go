@@ -14,7 +14,8 @@ func Register(app core.App, couch *couchdb.Client) error {
 	app.OnRecordAfterConfirmVerificationRequest().Add(
 		func(e *core.RecordConfirmVerificationEvent) error {
 			user_id := e.Record.Id
-			CreateUserDBForSync(couch, user_id)
+			CreateUserDBForSync(couch, "userdb", user_id)
+			CreateUserDBForSync(couch, "userattachment", user_id)
 			return nil
 		},
 	)
@@ -25,15 +26,16 @@ func Register(app core.App, couch *couchdb.Client) error {
 		records := []models.BaseModel{}
 		app.Dao().DB().NewQuery("SELECT id FROM users WHERE verified=true").All(&records)
 		for _, u := range records {
-			CreateUserDBForSync(couch, u.Id)
+			CreateUserDBForSync(couch, "userdb", u.Id)
+			CreateUserDBForSync(couch, "userattachment", u.Id)
 		}
 		return nil
 	})
 	return nil
 }
 
-func CreateUserDBForSync(couch *couchdb.Client, userid string) {
-	db_name := fmt.Sprintf("userdb-%s", userid)
+func CreateUserDBForSync(couch *couchdb.Client, prefix string, userid string) {
+	db_name := fmt.Sprintf("%s-%s", prefix, userid)
 
 	db, err := couch.EnsureDB(db_name)
 	if err != nil {
@@ -42,6 +44,9 @@ func CreateUserDBForSync(couch *couchdb.Client, userid string) {
 
 	secobj, _ := db.Security()
 
+	if secobj == nil {
+		return;
+	}
 	if !slices.Contains(secobj.Admins.Names, userid) {
 		secobj.Admins.Names = append(secobj.Admins.Names, userid)
 	}

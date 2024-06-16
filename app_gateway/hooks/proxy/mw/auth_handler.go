@@ -9,7 +9,15 @@ import (
 )
 
 func GetIDFromPath(path string) string {
-	return strings.Split(strings.TrimPrefix(path, "/userdb-"), "/")[0]
+	// return strings.Split(strings.TrimPrefix(path, "/userdb-"), "/")[0]
+	// now path may start with /userdb- or /userattachment-
+	if strings.HasPrefix(path, "/userdb-") {
+		return strings.Split(strings.TrimPrefix(path, "/userdb-"), "/")[0]
+	} else if strings.HasPrefix(path, "/userattachment-") {
+		return strings.Split(strings.TrimPrefix(path, "/userattachment-"), "/")[0]
+	} else {
+		return ""
+	}
 }
 
 func CouchAuthHandler(c echo.Context) error {
